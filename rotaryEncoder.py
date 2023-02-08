@@ -61,7 +61,7 @@ def __main__():
 
         controller = encoder(clk,dt,sw, start_value=value)
         
-        controller.navigate()
+        controller.update()
 
 if __name__=='__main__':
         __main__()
