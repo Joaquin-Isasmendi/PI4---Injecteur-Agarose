@@ -74,7 +74,7 @@ def runPrgmNum(PHS_num):
 
 def __main__():
 
-    port = setup_serial("COM7", 19200, 1)
+    port = setup_serial("/dev/ttyUSB0", 19200, 1)
     
     print('Connected.')
 
