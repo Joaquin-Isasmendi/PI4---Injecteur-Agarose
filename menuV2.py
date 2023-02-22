@@ -3,32 +3,22 @@ import rotaryEncoder
 from time import sleep
 #import menu
 
-# def navigate(encoder, lcd_object, text, unit):
-#         button = False
-#         print('The value is now:')
-#         while not button:
-#                 encoder.update()
-                
-#                 button = encoder.get_switch()
-        
-#         print(f'Chosen value:{encoder.get_value}')
-#         return encoder.get_value
 
 def navigate(encoder, lcd_object, disp_dict):
-        text = disp_dict['text']
+        text = disp_dict['var_text']
         # unit = disp_dict['unit']
         line = disp_dict['line']
         position = disp_dict['position']
         button = False
 
         while not button:
-                x = input('Value:')
-                lcd_object.disp(text, line = line, position = position)
+                x = int(input('Value:'))
+                lcd_object.disp(text, line[x], position[x])
                 end = input(f'Choose value = {x}? (y/n)')
                 if end.lower() == 'y': button = True
 
         print(f'Chosen value:{x}')
-        return x[:-1]
+        return x
 
 def pumpProtocol(values):
     import pumpCtrl
@@ -63,7 +53,7 @@ def __main__():
     max_temp = 40
 
     controller_pins = [22,27,17]
-    controller = rotaryEncoder(*controller_pins) # clk, dt, sw
+    controller = rotaryEncoder.encoder(*controller_pins) # clk, dt, sw
     button = False
 
     lcd_address = 0x27
@@ -105,22 +95,22 @@ def __main__():
             "position":0
         },
         "menu":{
-            "text":"",
-            "var_text":"\u22c5",
+            "text":"*",
+            "var_text":'*',
             "unit": "",
             "line":[1,1,2],
-            "position": [2,10,2]
+            "position": [1,9,1]
         }
     }
 
     menu_values = [volume, flow_rate, start]
+    selected_item =0 
     lcd_screen.disp('  volume  start ', line=1)
     lcd_screen.disp('  flow rate', line=2)
     while selected_item != start:
         controller.set_value(0, 1, [0,2])
         while not button:
-            selected_item = controller.update()
-            button = controller.get_switch()
+            selected_item = navigate(controller, lcd_screen, display_dictionnaries['menu'])
 
         if selected_item != start:
             parameter = menu_values[selected_item]
