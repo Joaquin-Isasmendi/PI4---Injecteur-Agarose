@@ -47,7 +47,7 @@ def pumpProtocol(values):
     pump_volume = values["volume"]
     pump_flowrate = values["flow_rate"]
 
-    port = pumpCtrl.setup_serial("COM7", 19200, 1)
+    port = pumpCtrl.setup_serial("/dev/ttyUSB0", 19200, 1)
 
     print('Connected.')
 
