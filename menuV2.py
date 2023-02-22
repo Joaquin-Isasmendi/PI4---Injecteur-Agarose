@@ -16,36 +16,34 @@ def navigate_menu(encoder, lcd_object, disp_dict):
                     lcd_object.disp(text["str"][i], text["line"][i], text["pos"][i])
                 x = int(input('Value:'))
                 lcd_object.disp(var_text, lines[x], position[x])
-                end = input(f'Choose value = {x}? (y/n)')
+                end = input(f'Confirm value {x}? (y/n)  ')
                 if end.lower() == 'y': button = True
 
         print(f'Chosen value:{x}')
+        lcd_object.lcd_clear()
         return x
 
 
 def navigate_parameter(encoder, lcd_object, disp_dict):
         text = disp_dict['text']
-        var_text = disp_dict['var_text']
-        lines = disp_dict['line']
-        position = disp_dict['position']
-        button = False
-
+        n= False
         x = 0
-        while not button:
+        while not n:
                 for i in range(len(text["str"])):
                     lcd_object.disp(text["str"][i], text["line"][i], text["pos"][i])
                 x = int(input('Value:'))
                 lcd_object.disp(str(x), line=2, pos = text["pos"][-1]-len(str(x)))
                 end = input(f'Choose value = {x}? (y/n)')
-                if end.lower() == 'y': button = True
+                if end.lower() == 'y': n = True
 
         print(f'Chosen value:{x}')
+        lcd_object.lcd_clear()
         return x
 
 def pumpProtocol(values):
     import pumpCtrl
 
-    temp_threshold = values["max_temp"]
+    temp_threshold = values["temperature"]
     pump_volume = values["volume"]
     pump_flowrate = values["flow_rate"]
 
@@ -110,8 +108,6 @@ def __main__():
                 "line":[1,2], 
                 "pos":[0,12]
             },
-            "var_text":'*',
-            "unit": "",
             "line":[1,1,2],
             "position": [1,9,1]
         },
@@ -121,36 +117,32 @@ def __main__():
                 "line":[1,2], 
                 "pos":[0,11]
             },
-            "var_text":'*',
-            "unit": "",
             "line":[1,1,2],
             "position": [1,9,1]
         },
         "menu":{
             "text":{
-                "str":['  volume  start ','  flow rate'],
+                "str":['  volume  start ','  flow'],
                 "line":[1,2], 
                 "pos":[0,0]
             },
             "var_text":'*',
-            "unit": "",
-            "line":[1,1,2],
-            "position": [1,9,1]
+            "line":[1,2,1],
+            "position": [1,1,9]
         }
     }
 
     menu_values = [volume, flow_rate, start]
+    menu_str = ['volume', 'flow_rate', 'start']
     selected_item =0 
-    lcd_screen.disp(, line=1)
-    lcd_screen.disp(, line=2)
     while selected_item != start:
         controller.set_value(0, 1, [0,2])
-        while not button:
-            selected_item = navigate_menu(controller, lcd_screen, display_dictionnaries['menu'])
-
-        if selected_item != start:
-            parameter = menu_values[selected_item]
-            parameter["selected_value"] = navigate(menu_values[selected_item])
+        selected_item = navigate_menu(controller, lcd_screen, display_dictionnaries['menu'])
+        print(f'Item:{selected_item}')
+        if selected_item != 2:
+            parameter = menu_str[selected_item]
+            print(f'Parameter value:{parameter}')  
+            menu_values[selected_item]['selected_value'] = int(navigate_parameter(controller, lcd_screen, display_dictionnaries[parameter]))
 
     #-----------------------|
     #   START PROCEDURE     |
