@@ -191,10 +191,11 @@ def __main__():
    mylcd.disp("Hello World!", 2, 3)
    x = input("beep boop? (y/n) :")
    if x.lower() == 'y':
+      mylcd.lcd_clear()
       mylcd.disp("beep boop!")
       mylcd.blink("bap bip", line=2, pos=-len("bap bip"))
    
-   elif x.lower == 'n':
+   elif x.lower() == 'n':
       mylcd.blink(">:(")
 
    else:
