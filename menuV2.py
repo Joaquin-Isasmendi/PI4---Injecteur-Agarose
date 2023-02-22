@@ -5,15 +5,17 @@ from time import sleep
 
 
 def navigate(encoder, lcd_object, disp_dict):
-        text = disp_dict['var_text']
-        # unit = disp_dict['unit']
-        line = disp_dict['line']
+        text = disp_dict['text']
+        var_text = disp_dict['var_text']
+        lines = disp_dict['line']
         position = disp_dict['position']
         button = False
 
         while not button:
                 x = int(input('Value:'))
-                lcd_object.disp(text, line[x], position[x])
+                for i in range(len(text["str"])):
+                    lcd_object.disp(text["str"][i], text["line"][i], text["pos"][i])
+                lcd_object.disp(var_text, lines[x], position[x])
                 end = input(f'Choose value = {x}? (y/n)')
                 if end.lower() == 'y': button = True
 
@@ -22,13 +24,13 @@ def navigate(encoder, lcd_object, disp_dict):
 
 def pumpProtocol(values):
     import pumpCtrl
-    
+
     temp_threshold = values["max_temp"]
     pump_volume = values["volume"]
     pump_flowrate = values["flow_rate"]
 
     port = pumpCtrl.setup_serial("COM7", 19200, 1)
-    
+
     print('Connected.')
 
     print(f'Port accesible:{port.writable()}')
@@ -95,7 +97,11 @@ def __main__():
             "position":0
         },
         "menu":{
-            "text":"*",
+            "text":{
+                "str":['  volume  start ','  flow rate'],
+                "line":[1,2], 
+                "pos":[0,0]
+            },
             "var_text":'*',
             "unit": "",
             "line":[1,1,2],
@@ -105,8 +111,8 @@ def __main__():
 
     menu_values = [volume, flow_rate, start]
     selected_item =0 
-    lcd_screen.disp('  volume  start ', line=1)
-    lcd_screen.disp('  flow rate', line=2)
+    lcd_screen.disp(, line=1)
+    lcd_screen.disp(, line=2)
     while selected_item != start:
         controller.set_value(0, 1, [0,2])
         while not button:
