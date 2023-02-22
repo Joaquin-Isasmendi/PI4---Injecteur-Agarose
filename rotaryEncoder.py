@@ -60,14 +60,21 @@ def __main__():
         dt=27
         sw=17
         value = 5
-        button=False
+        button_held = False
+        held_down = 0
         controller = encoder(clk,dt,sw, start_value=value)
         controller.set_value(value, 1, [0,10])
-        while button != True:
+        while button_held != True:
             value= controller.update()
             print(f'Value:{value}')
             button=controller.get_switch()
             print(f'\tBOUTON ={button}')
+            while button:
+                held_down+=1
+                button=controller.get_switch()
+                print(f'Held value : {held_down}')
+            if held_down >= 300: button_held = True 
+            else: held_down = 0
             sleep(0.01)
 
 if __name__=='__main__':
